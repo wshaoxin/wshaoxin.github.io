@@ -16,7 +16,7 @@
   <entry>
     <title><![CDATA[hello world]]></title>
     <url>%2F2018%2F12%2F05%2Fhello-world%2F</url>
-    <content type="text"><![CDATA[nihao你好欢迎访问我的博客：wshaoxin 12print('hello world')import requests Your browser does not support the video tag.]]></content>
+    <content type="text"><![CDATA[nihao你好欢迎访问我的博客：wshaoxin 12print('hello world')import requests]]></content>
       <categories>
         <category>python</category>
       </categories>
