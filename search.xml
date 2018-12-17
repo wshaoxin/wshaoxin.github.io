@@ -1,17 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title><![CDATA[正则表达式]]></title>
-    <url>%2F2018%2F12%2F13%2F%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%2F</url>
-    <content type="text"><![CDATA[正则表达式用法 定义 正则表达式是文本的高级匹配模式，提供搜索，替代，查找等功能。本质是由一系列特殊符号和字符组成的字串。 特点 方便进行检索修改文本的操作 支持编程语言众多 使用灵活多样 常用的匹配规则 table th:first-of-type { width: 100px; } 模式 描述 \w 匹配数字、字母及下划线 \W 匹配不是字母、数字及下划线的内容 \s 匹配任意空白字符，等价于[\t\n\r\f] \S 匹配任意非空字符 \d 匹配任意数字，等价于[0-9] \D 匹配任意非数字的字符 \A 匹配字符串开头 \Z 匹配字符串结尾，如果是存在换行，只匹配到换行前的结束字符串 \z 匹配字符串结尾，如果存在换行，同时还会匹配换行符 \G 匹配最后匹配完成的位置 \n 匹配一个换行符 \t 匹配一个制表符 ^ 匹配一个字符串的开头 $ 匹配一个字符串的结尾 . 匹配除换行符\n外任意字符 [...] 用来表示一组字符,单独列出：[amk] 匹配 a，m或k [^...] 不在[]中的字符：[^abc] 匹配除了a,b,c之外的字符 * 匹配0个或多个表达式 + 匹配一个或多个表达式 ? 匹配0个或1个由前面的正则表达式定义的片段，非贪婪方式 {n} 匹配n个前面表达式。例如，o{2}不能匹配Bob中的o，但是能匹配food中的两个o。 {m,n} 匹配 m 到 n 次由前面的正则表达式定义的片段，贪婪方式 &nbsp;&#124; 匹配&nbsp;&#124;&nbsp;两边任意一个字符 ( ) 匹配括号内的表达式，也表示一个组 a b c &amp; # 匹配字符本身 python中的re模块提供了整个正则表达式的实现，利用这个库可以在python中使用正则表达式 re.match函数 re.match 尝试从字符串的起始位置匹配一个模式，如果不是起始位置匹配成功的话，match()就返回none。 函数语法1re.match(pattern, string) 函数参数说明： pattern：匹配的正则表达式string：要匹配的字符串 我们可以使用 group(num) 或 groups() 匹配对象函数来获取匹配表达式。 示例:12345678import re content = 'Hello 123 4567 World_This is a Regex Demo'print(len(content))result = re.match('^Hello\s\d\d\d\s\d&#123;4&#125;\s\w&#123;10&#125;', content)print(result)print(result.group())print(result.span()) 运行结果：123441&lt;_sre.SRE_Match object; span=(0, 25), match='Hello 123 4567 World_This'&gt;Hello 123 4567 World_This(0, 25) 打印输出结果，可以看到结果是 SRE_Match 对象，这证明成功匹配。该对象有两个方法：group()方法可以输出匹配到的内容，结果是 Hello 123 4567 World_This，这恰好是正则表达式规则所匹配的内容；span()方法可以输出匹配的范围，结果是(0, 25)，这就是匹配到的结果字符串在原字符串中的位置范围。 匹配目标 用()将需要提取的字符串括起来即可 通用匹配 用.和*组合在一起可以匹配除换行符外的所有字符 贪婪与非贪婪 贪婪模式：正则表达式的重复默认总是尽可能多的向后匹配内容 ? {m,n} 非贪婪模式 ： 尽可能少的匹配内容 *? +? ?? {m,n}? 示例： 12re.findall(r'ab*?',"abbbbbcde")re.findall(r'ab+?',"abbbbbcde") 输出结果：12aab 在做匹配的时候，字符串中间尽量使用非贪婪匹配，也就是用.*?来代替.*，以免出现匹配结果缺失的情况。但需要注意，如果匹配的结果在字符串结尾，.*?就有可能匹配不到任何内容了，因为它会匹配尽可能少的字符。 修饰符re.S 这个修饰符的作用是使.匹配包括换行符在内的所有字符。 其他修饰符： | 修饰符 | 描述 || re.I | 使匹配对大小写不敏感 || re.L | 做本地化识别（locale-aware）匹配 || re.M | 多行匹配，影响 ^ 和 $ || re.U | 根据 Unicode 字符集解析字符。这个标志影响 \w, \W, \b, \B. || re.X | 该标志通过给予你更灵活的格式以便你将正则表达式写得更易于理解。 | 转义匹配 当re模式里的字符与要匹配的目标字符串重复时，用反斜线\进行转义 re.search函数 match()方法是从字符串的开头开始匹配的，一旦开头不匹配，那么整个匹配就失败了。 search()方法在匹配时会扫描整个字符串，然后返回第一个成功匹配的结果。也就是说，正则表达式可以是字符串的一部分，在匹配时，search()方法会依次扫描字符串，直到找到第一个符合规则的字符串，然后返回匹配内容，如果搜索完了还没有找到，就返回None。 函数语法12re.search(pattern, string)#参数同match()方法 re.findall方法 在字符串中找到正则表达式所匹配的所有子串，并返回一个列表，如果没有找到匹配的，则返回空列表。 match 和 search 是匹配一次，findall 是匹配所有。]]></content>
+    <title><![CDATA[test]]></title>
+    <url>%2F2018%2F12%2F16%2Ftest%2F</url>
+    <content type="text"><![CDATA[nihao你好nihao 欢迎访问我的博客：wshaoxin 12print('hello world')import requests]]></content>
+      <categories>
+        <category>python</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[npyquery的使用]]></title>
+    <url>%2F2018%2F12%2F14%2F%E8%A7%A3%E6%9E%90%2Fpyquery%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95%2F</url>
+    <content type="text"><![CDATA[居中引用]]></content>
+  </entry>
+  <entry>
+    <title><![CDATA[”Beautiful Soup的使用]]></title>
+    <url>%2F2018%2F12%2F14%2F%E8%A7%A3%E6%9E%90%2FBeautiful%20Soup%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95%2F</url>
+    <content type="text"></content>
+  </entry>
+  <entry>
+    <title><![CDATA[XPath的基本用法]]></title>
+    <url>%2F2018%2F12%2F14%2F%E8%A7%A3%E6%9E%90%2FXPath%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95%2F</url>
+    <content type="text"><![CDATA[XPath 的基本用法 简介XPath，全称 XML Path Language，即 XML 路径语言 可在 XML 中查找信息 支持 HTML 的查找 通过元素和属性进行导航 xml 文档（html 属于 xml）是由一系列节点构成的树，例如：12345678&lt;html&gt; &lt;body&gt; &lt;div &gt; &lt;p&gt;Hello world&lt;p&gt; &lt;a href="/home"&gt;Click here&lt;/a&gt; &lt;/div&gt; &lt;/body&gt;&lt;/html&gt; 在 python 中通过 lxml 库利用XPath对HTML进行解析 XPath 辅助工具： Chrome插件 ：Xpath Helper 打开/关闭 ：Ctrl + Shift + x Firefox插件 ：Xpath checker Xpath表达式编辑工具 ：XML Quire XPath 常用规则 表达式 描述 nodename 选取此节点的所有子节点 / 从当前节点中选区直接子节点 // 从当前节点中选取子孙节点 . 选取当前节点 .. 选取当前节点的父节点 @ 选取属性 * 选取所有元素子节点 @* 选区所有属性节点 @ATTR 选取名为ATTR的属性节点 text（） 选区所有文本子节点 XPath 轴 轴名称 表达式 描述 ancestor xpath(‘./ancestor::*’) 选取当前节点的所有先辈节点（父、祖父） ancestor-or-self xpath(‘./ancestor-or-self::*’) 选取当前节点的所有先辈节点以及节点本身 attribute xpath(‘./attribute::*’) 选取当前节点的所有属性 child xpath(‘./child::*’) 返回当前节点的所有子节点 descendant xpath(‘./descendant::*’) 返回当前节点的所有后代节点（子节点、孙节点） following xpath(‘./following::*’) 选取文档中当前节点结束标签后的所有节点 following-sibing xpath(‘./following-sibing::*’) 选取当前节点之后的兄弟节点 parent xpath(‘./parent::*’) 选取当前节点的父节点 preceding xpath(‘./preceding::*’) 选取文档中当前节点开始标签前的所有节点 preceding-sibling xpath(‘./preceding-sibling::*’) 选取当前节点之前的兄弟节点 self xpath(‘./self::*’) 选取当前节点 XPath 功能函数 table th:nth-of-type(1) { width: 100px; } 函数 用法用法 解释 starts-with xpath(‘//div[starts-with(@id,”ma”)]‘) 选取id值以ma开头的div节点 contains xpath(‘//div[contains(@id,”ma”)]‘) 选取id值包含ma的div节点 and xpath(‘//div[contains(@id,”ma”) and contains(@id,”in”)]‘) 选取id值包含ma和in的div节点 text() xpath(‘//div[contains(text(),”ma”)]‘) 选取节点文本包含ma的div节点]]></content>
       <categories>
         <category>Spider</category>
         <category>解析</category>
       </categories>
       <tags>
+        <tag>XPath</tag>
+        <tag>解析</tag>
+        <tag>lxml</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[正则表达式]]></title>
+    <url>%2F2018%2F12%2F13%2F%E8%A7%A3%E6%9E%90%2F%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[正则表达式用法 定义 正则表达式是文本的高级匹配模式，提供搜索，替代，查找等功能。本质是由一系列特殊符号和字符组成的字串。 特点 方便进行检索修改文本的操作 支持编程语言众多 使用灵活多样 常用的匹配规则 table th:first-of-type { width: 100px; } 模式 描述 \w 匹配数字、字母及下划线 \W 匹配不是字母、数字及下划线的内容 \s 匹配任意空白字符，等价于[\t\n\r\f] \S 匹配任意非空字符 \d 匹配任意数字，等价于[0-9] \D 匹配任意非数字的字符 \A 匹配字符串开头 \Z 匹配字符串结尾，如果是存在换行，只匹配到换行前的结束字符串 \z 匹配字符串结尾，如果存在换行，同时还会匹配换行符 \G 匹配最后匹配完成的位置 \n 匹配一个换行符 \t 匹配一个制表符 ^ 匹配一个字符串的开头 $ 匹配一个字符串的结尾 . 匹配除换行符\n外任意字符 [...] 用来表示一组字符,单独列出：[amk] 匹配 a，m或k [^...] 不在[]中的字符：[^abc] 匹配除了a,b,c之外的字符 * 匹配0个或多个表达式 + 匹配一个或多个表达式 ? 匹配0个或1个由前面的正则表达式定义的片段，非贪婪方式 {n} 匹配n个前面表达式。例如，o{2}不能匹配Bob中的o，但是能匹配food中的两个o。 {m,n} 匹配 m 到 n 次由前面的正则表达式定义的片段，贪婪方式 &nbsp;&#124; 匹配&nbsp;&#124;&nbsp;两边任意一个字符 ( ) 匹配括号内的表达式，也表示一个组 a b c &amp; # 匹配字符本身 python中的re模块提供了整个正则表达式的实现，利用这个库可以在python中使用正则表达式 re.match函数 re.match 尝试从字符串的起始位置匹配一个模式，如果不是起始位置匹配成功的话，match()就返回none。 函数语法： 1234re.match(pattern, string, flags=0)#pattern：匹配的正则表达式#string：要匹配的字符串#flags：标志位，用于控制正则表达式的匹配方式，如：是否区分大小写，多行匹配等等 我们可以使用 group(num) 或 groups() 匹配对象函数来获取匹配表达式。 示例:12345678import re content = 'Hello 123 4567 World_This is a Regex Demo'print(len(content))result = re.match('^Hello\s\d\d\d\s\d&#123;4&#125;\s\w&#123;10&#125;', content)print(result)print(result.group())print(result.span()) 运行结果：123441&lt;_sre.SRE_Match object; span=(0, 25), match='Hello 123 4567 World_This'&gt;Hello 123 4567 World_This(0, 25) 打印输出结果，可以看到结果是 SRE_Match 对象，这证明成功匹配。该对象有两个方法：group()方法可以输出匹配到的内容，结果是 Hello 123 4567 World_This，这恰好是正则表达式规则所匹配的内容；span()方法可以输出匹配的范围，结果是(0, 25)，这就是匹配到的结果字符串在原字符串中的位置范围。 匹配目标 用()将需要提取的字符串括起来即可 通用匹配 用.和*组合在一起可以匹配除换行符外的所有字符 贪婪与非贪婪 贪婪模式：正则表达式的重复默认总是尽可能多的向后匹配内容 ? {m,n} 非贪婪模式 ： 尽可能少的匹配内容 *? +? ?? {m,n}? 示例： 12re.findall(r'ab*?',"abbbbbcde")re.findall(r'ab+?',"abbbbbcde") 输出结果：12aab 在做匹配的时候，字符串中间尽量使用非贪婪匹配，也就是用.*?来代替.*，以免出现匹配结果缺失的情况。但需要注意，如果匹配的结果在字符串结尾，.*?就有可能匹配不到任何内容了，因为它会匹配尽可能少的字符。 修饰符re.S 这个修饰符的作用是使.匹配包括换行符在内的所有字符。 其他修饰符： table th:first-of-type { width: 100px; } 修饰符 描述 re.I 使匹配对大小写不敏感 re.L 做本地化识别（locale-aware）匹配 re.M 多行匹配，影响 ^ 和 $ re.U 根据 Unicode 字符集解析字符。这个标志影响 \w, \W, \b, \B. re.X 该标志通过给予你更灵活的格式以便你将正则表达式写得更易于理解。 转义匹配 当re模式里的字符与要匹配的目标字符串重复时，用反斜线\进行转义 re.search 函数 match()方法是从字符串的开头开始匹配的，一旦开头不匹配，那么整个匹配就失败了。 search()方法在匹配时会扫描整个字符串，然后返回第一个成功匹配的结果。也就是说，正则表达式可以是字符串的一部分，在匹配时，search()方法会依次扫描字符串，直到找到第一个符合规则的字符串，然后返回匹配内容，如果搜索完了还没有找到，就返回None。 函数语法: 12re.search(pattern, string, flags=0)#参数同match()方法 re.findall 方法 在字符串中找到正则表达式所匹配的所有子串，并返回一个列表，如果没有找到匹配的，则返回空列表。 match 和 search 是匹配一次，findall 是匹配所有。 函数语法: 12re.findall(pattern, string, flags=0)#参数同match()方法 re.sub 方法 用于替换字符串中的匹配项 函数语法： 12345re.sub(pattern, repl, string, count=0)#pattern : 正则中的模式字符串。#repl : 替换的字符串，也可为一个函数。#string : 要被查找替换的原始字符串。#count : 模式匹配后替换的最大次数，默认 0 表示替换所有的匹配。 re.compile方法 compile 函数用于编译正则表达式，生成一个正则表达式（Pattern）对象 函数语法： 123re.compile(pattern[, flags])#pattern: 一个字符串形式的正则表达式#flags: 修饰符，可选，表示匹配模式，比如忽略大小写，多行模式等 re.finditer 方法 和 findall 类似，在字符串中找到正则表达式所匹配的所有子串，并把它们作为一个迭代器返回 函数语法: 1re.finditer(pattern, string, flags=0) 示例：12345import re it = re.finditer(r"\d+","12a32bc43jf3") for match in it: print (match.group() ) 输出：123412 32 43 3 re.split 方法 split 方法按照能够匹配的子串将字符串分割后返回列表 函数语法:12re.split(pattern, string[, maxsplit=0, flags=0])#maxsplit:分隔次数，maxsplit=1 分隔一次，默认为 0，不限制次数。]]></content>
+      <categories>
+        <category>Spider</category>
+        <category>解析</category>
+      </categories>
+      <tags>
+        <tag>解析</tag>
         <tag>re</tag>
         <tag>正则</tag>
-        <tag>解析</tag>
       </tags>
   </entry>
   <entry>
@@ -27,7 +62,7 @@
   </entry>
   <entry>
     <title><![CDATA[爬虫基本原理]]></title>
-    <url>%2F2018%2F12%2F08%2F%E7%88%AC%E8%99%AB%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%2F</url>
+    <url>%2F2018%2F12%2F08%2FSpider%E5%9F%BA%E7%A1%80%2F%E7%88%AC%E8%99%AB%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%2F</url>
     <content type="text"><![CDATA[什么是爬虫 网络爬虫是一个自动提取网页的程序，它为搜索引擎从万维网上下载网页，是搜索引擎的重要组成。传统爬从一个或若干初始网页的URL开始，获得初始网页上的URL，在抓取网页的过程中，不断从当前页面上抽取新的URL放入队列,直到满足系统的一定停止条件. 我们可以把互联网比作一张大网，而爬虫（即网络爬虫）便是在网上爬行的蜘蛛。把网的节点比作一个个网页，爬虫爬到这就相当于访问了该页面，获取了其信息。可以把节点间的连线比作网页与网页之间的链接关系，这样蜘蛛通过一个节点后，可以顺着节点连线继续爬行到达下一个节点，即通过一个网页继续获取后续的网页，这样整个网的节点便可以被蜘蛛全部爬行到，网站的数据就可以被抓取下来了。 简单来说，爬虫就是获取网页并提取和保存信息的自动化程序。 爬虫的作用 Web爬虫作为搜索引擎的重要组成部分 使用聚焦网络爬虫实现任何门户网站上的搜索引擎或搜索功能。它有助于搜索引擎找到与搜索主题具有最高相关性的网页。 建立数据集 现在已经进入大数据时代，各行各业都需要大量的数据，利用爬虫可以建立数据集以用于研究、业务和其他目的。 爬虫的分类 通用Web爬虫 通用网络爬虫所爬取的目标数据是巨大的，并且爬行的范围也是非常大的，正是由于其爬取的数据是海量数据，故而对于这类爬虫来说，其爬取的性能要求是非常高的。这种网络爬虫主要应用于大型搜索引擎中，有非常高的应用价值。 或者应用于大型数据提供商。 聚焦网络爬虫 聚焦网络爬虫是按照预先定义好的主题有选择地进行网页爬取的一种爬虫，聚焦网络爬虫不像通用网络爬虫一样将目标资源定位在全互联网中，而是将爬取的目标网页定位在与主题相关的页面中，此时，可以大大节省爬虫爬取时所需的带宽资源和服务器资源。聚焦网络爬虫主要应用在对特定信息的爬取中，主要为某一类特定的人群提供服务。 增量Web爬虫 增量式网络爬虫，在爬取网页的时候，只爬取内容发生变化的网页或者新产生的网页，对于未发生内容变化的网页，则不会爬取。增量式网络爬虫在一定程度上能够保证所爬取的页面，尽可能是新页面。 深层网络爬虫 在互联网中，网页按存在方式分类，可以分为表层页面和深层页面。所谓的表层页面，指的是不需要提交表单，使用静态的链接就能够到达的静态页面；而深层页面则隐藏在表单后面，不能通过静态链接直接获取，是需要提交一定的关键词之后才能够获取得到的页面。在互联网中，深层页面的数量往往比表层页面的数量要多很多，故而，我们需要想办法爬取深层页面。 爬虫能抓什么样的数据 在网页中我们能看到各种各样的信息，最常见的便是常规网页，它们对应着 HTML 代码，而最常抓取的便是 HTML 源代码。 另外，可能有些网页返回的不是 HTML 代码，而是一个 JSON 字符串（其中 API 接口大多采用这样的形式），这种格式的数据方便传输和解析，它们同样可以抓取，而且数据提取更加方便。 此外，我们还可以看到各种二进制数据，如图片、视频和音频等。利用爬虫，我们可以将这些二进制数据抓取下来，然后保存成对应的文件名。 另外，还可以看到各种扩展名的文件，如 CSS、JavaScript 和配置文件等，这些其实也是最普通的文件，只要在浏览器里面可以访问到，就可以将其抓取下来。 上述内容其实都对应各自的 URL，是基于 HTTP 或 HTTPS 协议的，只要是这种数据，爬虫都可以抓取。 爬虫基本流程 爬虫首先要做的工作就是获取网页，这里就是获取网页的源代码。源代码里包含了网页的部分有用信息，所以只要把源代码获取下来，就可以从中提取想要的信息了。 确定要爬取的 URL 地址 确定我们要爬取的网站，得到他的 url 地址 发起请求 向网站发起一个 request 请求 Python提供了许多库来帮助我们实现这个操作，如 urllib、requests 等。我们可以用这些库来帮助我们实现 HTTP 请求操作 获取响应内容 请求成功之后会返回 response 包含所请求网页的 HTML 代码或者 JSON 字符串等。 解析内容 获取网页源代码后，接下来就是分析网页源代码，从中提取我们想要的数据。首先，最通用的方法便是采用正则表达式提取，这是一个万能的方法，但是在构造正则表达式时比较复杂且容易出错。 另外，由于网页的结构有一定的规则，所以还有一些根据网页节点属性、CSS 选择器或 XPath 来提取网页信息的库，如 Beautiful Soup、pyquery、lxml 等。使用这些库，我们可以高效快速地从中提取网页信息，如节点的属性、文本值等。 保存数据 提取信息后，我们一般会将提取到的数据保存到某处以便后续使用。这里保存形式有多种多样，如可以简单保存为 TXT 文本或 JSON 文本，也可以保存到数据库，如 MySQL 和 MongoDB 等。 Request什么是 Request 浏览器发送消息给网址所在的服务器，这个过程叫 HTTP Request。 Request 中包含了什么请求方式 主要有 GET、POST 两种类型 GET：查询参数在URL地址上显示 POST：查询参数在表单 data 中 请求 URL URL ：统一资源定位符 https: //item.jd.com :80/443 /11936238.html #detail 协议 域名/IP地址 端口 访问资源的路径 锚点 请求头 包含请求时的头部信息，如 User-Agent、Host、Cookies 等信息。 User-Agent： 记录用户的浏览器、操作系统等,为了让用户获取更好的 HTML 页面效果 如：Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) 如：AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11) 各类浏览器内核： Mozilla Firefox : (Gecko内核) IE ：Trident (自己的内核) Linux : KHTML (like Gecko) Apple : Webkit (like KHTML) Google : Chrome (like Webkit) HOST： 客户端指定自己想访问的 http 服务器的域名/IP 地址和端口号。 Cookie： Cookies 里面保存了登录的凭证，有了它，只需要在下次请求携带 Cookies 发送请求而不必重新输入用户名、密码等信息重新登录了。 Response什么是 Response Response 是请求后返回的内容，包含所请求网页的 HTML 代码或者 JSON 字符串等。 Response中包含了什么响应状态 有多重响应状态，如200代表成功、301是跳转、404为找不到网页、502服务器错误 响应头 如内容类型、内容长度、服务器信息、设置 Cookie 等等； 响应体 最主要的部分，包含了请求资源的内容，如网页HTML、图片二进制数据等；]]></content>
       <categories>
         <category>Spider</category>
@@ -36,17 +71,6 @@
       <tags>
         <tag>Spider</tag>
         <tag>爬虫</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[test]]></title>
-    <url>%2F2018%2F12%2F05%2Ftest%2F</url>
-    <content type="text"><![CDATA[nihao你好nihao 欢迎访问我的博客：wshaoxin 12print('hello world')import requests]]></content>
-      <categories>
-        <category>python</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
       </tags>
   </entry>
 </search>
