@@ -1,9 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[分析Ajax抓取今日头条]]></title>
+    <url>%2F2018%2F12%2F22%2F%E9%A1%B9%E7%9B%AE%E5%AE%9E%E8%B7%B5%2FAjax%E6%8A%93%E5%8F%96%E4%BB%8A%E6%97%A5%E5%A4%B4%E6%9D%A1%2F</url>
+    <content type="text"><![CDATA[分析今日头条数据传输方式，利用requests进行抓取保存至本地 抓取分析打开今日头条的首页http://www.toutiao.com/ 右上角有一个搜索入口，这里尝试抓取街拍美图，所以输入“街拍”二字搜索一下 这时我们可以打开开发者工具查看所有网络请求中的第一个请求，查看他的 Response Body，我们可以发现网页中的内容并不包含在这条请求中，所以我们初步判断 这些内容是由 Ajax 加载，然后用 JS 渲染出来的。然后我们切换到 XHR 过滤选项卡，这时可以看到有 Ajax 请求。 点击data字段展开，发现这里有许多条数据。点击第一条展开，可以发现有一个title字段，它的值正好就是页面中第一条数据的标题。再检查一下其他数据，也正好是一一对应的。如下图： 这就确定了这些数据确实是由Ajax加载的。 我们的目的是要抓取其中的美图，这里一组图就对应前面data字段中的一条数据。每条数据还有一个image_detail字段，它是列表形式，这其中就包含了组图的所有图片列表，如下图： 因此，我们只需要将列表中的url字段提取出来并下载下来就好了。每一组图都建立一个文件夹，文件夹的名称就为组图的标题。 接下来，就可以直接用Python来模拟这个Ajax请求，然后提取出相关美图链接并下载。但是在这之前，我们还需要分析一下URL的规律。 切换回Headers选项卡，观察一下它的请求URL和Headers信息，如下图： 可以看到，这是一个GET请求，请求URL的参数有offset、format、keyword、autoload、count、cur_tab和from等。我们需要找出这些参数的规律，因为这样才可以方便地用程序构造出来。 接下来，可以滑动页面，多加载一些新结果。在加载的同时可以发现，Network中又出现了许多Ajax请求，如下图： 这里观察一下后续链接的参数，发现变化的参数只有offset，其他参数都没有变化，而且第二次请求的offset值为20，第三次为40，第四次为60，所以可以发现规律，这个offset值就是偏移量，进而可以推断出count参数就是一次性获取的数据条数。因此，我们可以用offset参数来控制数据分页。这样一来，我们就可以通过接口批量获取数据了，然后将数据解析，将图片下载下来即可。 抓取实现首先，实现方法get_page()来加载单个Ajax请求的结果。其中唯一变化的参数就是offset，所以我们将它当作参数传递，实现如下： 12345678910111213141516171819202122232425262728import requestsfrom urllib.parse import urlencode headers = &#123; 'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36 ' 'cookie': 'tt_webid=6637749626995492359; WEATHER_CITY=%E5%8C%97%E4%BA%AC; UM_distinctid=167d547f1b3460-020c50f8b937b2-424e0b28-1fa400-167d547f1b489; CNZZDATA1259612802=1003758837-1545470092-%7C1545470092; tt_webid=6637749626995492359; __tasessionId=hkxc5jku31545471521344; csrftoken=6767aaa50120c05ed4a74271670aef22' 'referer': 'https://www.toutiao.com/search/?keyword=%E8%A1%97%E6%8B%8D' 'x-requested-with': 'XMLHttpRequest' &#125; def get_page(offset): params = &#123; 'offset': offset, 'format': 'json', 'keyword': '街拍', 'autoload': 'true', 'count': '20', 'cur_tab': '1', 'from': 'search_tab' &#125; base_url = 'http://www.toutiao.com/search_content/?' url = base_url + urlencode(params) try: response = requests.get(url，headers=headers) if response.status_code == 200: return response.json() except requests.ConnectionError: return None 这里我们用urlencode()方法构造请求的GET参数，然后用requests请求这个链接，如果返回状态码为200，则调用response的json()方法将结果转为JSON格式，然后返回。 接下来，再实现一个解析方法：提取每条数据的image_detail字段中的每一张图片链接，将图片链接和图片所属的标题一并返回，此时可以构造一个生成器。实现代码如下： 12345678910111213def get_images(json): if json.get('data'): data = json.get('data') for item in data: if item.get('cell_type') is not None: continue title = item.get('title') images = item.get('image_list') for image in images: yield &#123; 'image': 'https:' + image.get('url'), 'title': title &#125; 接下来，实现一个保存图片的方法save_image()，其中item就是前面get_images()方法返回的一个字典。在该方法中，首先根据item的title来创建文件夹，然后请求这个图片链接，获取图片的二进制数据，以二进制的形式写入文件。图片的名称可以使用其内容的MD5值，这样可以去除重复。相关代码如下： 123456789101112131415161718192021import osfrom hashlib import md5# 保存图片至指定路径def save_image(item): img_path = 'D:/imagedata/&#123;title&#125;'.format(title=item.get('title')) if not os.path.exists(img_path): os.makedirs(img_path) try: pic = requests.get(item.get('image')) if pic.status_code == 200: file_path = img_path + '&#123;file_name&#125;.jpg'.format( file_name=md5(pic.content).hexdigest()) if not os.path.exists(file_path): with open(file_path, 'wb') as f: f.write(pic.content) print('%s Save Successful' % file_path) else: print('Already Downloaded', file_path) except requests.ConnectionError: print('Failed to Save Image，item %s' % item) 最后，只需要构造一个offset数组，遍历offset，提取图片链接，并将其下载即可： 1234567891011121314151617from multiprocessing.pool import pooldef main(offset): json = get_page(offset) for item in get_image(json): print(item) save_image(item) GROUP_START = 1GROUP_END = 20if __name__ == "__main__": pool = pool() groups = ([i * 20 for i in range(GROUP_START,GROUP_END + 1)]) pool.map(main,groups) pool.close() pool.join() 这里定义了分页的起始页数和终止页数，分别为GROUP_START和GROUP_END，还利用了多线程的线程池，调用其map()方法实现多线程下载。 这样整个程序就完成了，运行之后可以发现街拍美图都分文件夹保存下来了。 运行结果如下： 完整代码地址：github.com/wshaoxin/Spider/toutiao_jiepai.py]]></content>
+      <categories>
+        <category>Spider</category>
+        <category>爬虫项目</category>
+      </categories>
+      <tags>
+        <tag>Ajax</tag>
+        <tag>requests</tag>
+        <tag>爬虫项目</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[选择排序]]></title>
     <url>%2F2018%2F12%2F21%2F%E6%AF%8F%E6%97%A5%E7%AE%97%E6%B3%95%2F%E9%80%89%E6%8B%A9%E6%8E%92%E5%BA%8F%2F</url>
-    <content type="text"><![CDATA[居中引用]]></content>
+    <content type="text"><![CDATA[每日算法__选择排序 原理： 选择排序比较好理解，好像是在一堆大小不一的球中进行选择（以从小到大，先选最小球为例）： 选择一个基准球 将基准球和余下的球进行一一比较，如果比基准球小，则进行交换 第一轮过后获得最小的球 在挑一个基准球，执行相同的动作得到次小的球 继续执行4，直到排序好 时间复杂度： O(n^2) 需要进行的比较次数为第一轮 n-1，n-2….1, 总的比较次数为 n*(n-1)/2 实现： 12345678910111213141516171819202122def selectedSort(myList): #获取list的长度 length = len(myList) #一共进行多少轮比较 for i in range(0,length-1): #默认设置最小值得index为当前值 smallest = i #用当先最小index的值分别与后面的值进行比较,以便获取最小index for j in range(i+1,length): #如果找到比当前值小的index,则进行两值交换 if myList[j]&lt;myList[smallest]: tmp = myList[j] myList[j] = myList[smallest] myList[smallest]=tmp #打印每一轮比较好的列表 print("Round ",i,": ",myList)myList = [1,4,5,0,6]print("Selected Sort: ")selectedSort(myList)]]></content>
+      <categories>
+        <category>每日算法</category>
+      </categories>
+      <tags>
+        <tag>每日算法</tag>
+        <tag>选择排序</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Ajax]]></title>
+    <url>%2F2018%2F12%2F21%2FAjax%2FAjax%2F</url>
+    <content type="text"><![CDATA[Ajax数据抓取的原理 有时候我们在用requests抓取页面的时候，得到的结果可能和在浏览器中看到的不一样：在浏览器中可以看到正常显示的页面数据，但是使用requests得到的结果并没有。这是因为requests获取的都是原始的HTML文档，而浏览器中的页面则是经过JavaScript处理数据后生成的结果，这些数据的来源有多种，可能是通过Ajax加载的，可能是包含在HTML文档中的，也可能是经过JavaScript和特定算法计算后生成的。 对于第一种情况，数据加载是一种异步加载方式，原始的页面最初不会包含某些数据，原始页面加载完后，会再向服务器请求某个接口获取数据，然后数据才被处理从而呈现到网页上，这其实就是发送了一个Ajax请求。 照Web发展的趋势来看，这种形式的页面越来越多。网页的原始HTML文档不会包含任何数据，数据都是通过Ajax统一加载后再呈现出来的，这样在Web开发上可以做到前后端分离，而且降低服务器直接渲染页面带来的压力。 所以如果遇到这样的页面，直接利用requests等库来抓取原始页面，是无法获取到有效数据的，这时需要分析网页后台向接口发送的Ajax请求，如果可以用requests来模拟Ajax请求，那么就可以成功抓取了。 什么是AjaxAjax，全称为Asynchronous JavaScript and XML，即异步的JavaScript和XML。它不是一门编程语言，而是利用JavaScript在保证页面不被刷新、页面链接不改变的情况下与服务器交换数据并更新部分网页的技术。 对于传统的网页，如果想更新其内容，那么必须要刷新整个页面，但有了Ajax，便可以在页面不被全部刷新的情况下更新其内容。在这个过程中，页面实际上是在后台与服务器进行了数据交互，获取到数据之后，再利用JavaScript改变网页，这样网页内容就会更新了。 基本原理初步了解了Ajax之后，我们再来详细了解它的基本原理。发送Ajax请求到网页更新的这个过程可以简单分为以下3步： (1) 发送请求； (2) 解析内容； (3) 渲染网页。 下面我们分别来详细介绍这几个过程。 发送请求我们知道JavaScript可以实现页面的各种交互功能，Ajax也不例外，它也是由JavaScript实现的，实际上执行了如下代码： 1234567891011121314var xmlhttp;if (window.XMLHttpRequest) &#123; // code for IE7+, Firefox, Chrome, Opera, Safari xmlhttp=new XMLHttpRequest();&#125; else &#123;// code for IE6, IE5 xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");&#125;xmlhttp.onreadystatechange=function() &#123; if (xmlhttp.readyState==4 &amp;&amp; xmlhttp.status==200) &#123; document.getElementById("myDiv").innerHTML=xmlhttp.responseText; &#125;&#125;xmlhttp.open("POST","/ajax/",true);xmlhttp.send(); 这是JavaScript对Ajax最底层的实现，实际上就是新建了XMLHttpRequest对象，然后调用onreadystatechange属性设置了监听，然后调用open()和send()方法向某个链接（也就是服务器）发送了请求。前面用Python实现请求发送之后，可以得到响应结果，但这里请求的发送变成JavaScript来完成.由于设置了监听，所以当服务器返回响应时，onreadystatechange对应的方法便会被触发，然后在这个方法里面解析响应内容即可。 解析内容得到响应之后，onreadystatechange属性对应的方法便会被触发，此时利用xmlhttp的responseText属性便可取到响应内容。这类似于Python中利用requests向服务器发起请求，然后得到响应的过程。那么返回内容可能是HTML，可能是JSON，接下来只需要在方法中用JavaScript进一步处理即可。比如，如果是JSON的话，可以进行解析和转化。 渲染网页JavaScript有改变网页内容的能力，解析完响应内容之后，就可以调用JavaScript来针对解析完的内容对网页进行下一步处理了。比如，通过document.getElementById().innerHTML这样的操作，便可以对某个元素内的源代码进行更改，这样网页显示的内容就改变了，这样的操作也被称作DOM操作，即对Document网页文档进行操作，如更改、删除等。 上例中，document.getElementById(&quot;myDiv&quot;).innerHTML=xmlhttp.responseText便将ID为myDiv的节点内部的HTML代码更改为服务器返回的内容，这样myDiv元素内部便会呈现出服务器返回的新数据，网页的部分内容看上去就更新了。 我们观察到，这3个步骤其实都是由JavaScript完成的，它完成了整个请求、解析和渲染的过程。 再回想微博的下拉刷新，这其实就是JavaScript向服务器发送了一个Ajax请求，然后获取新的微博数据，将其解析，并将其渲染在网页中。 因此，我们知道，真实的数据其实都是一次次Ajax请求得到的，如果想要抓取这些数据，需要知道这些请求到底是怎么发送的，发往哪里，发了哪些参数。如果我们知道了这些，就可以用Python模拟这个发送操作，获取到其中的结果。]]></content>
+      <categories>
+        <category>Spider</category>
+        <category>Ajax</category>
+      </categories>
+      <tags>
+        <tag>Ajax</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[快速排序]]></title>

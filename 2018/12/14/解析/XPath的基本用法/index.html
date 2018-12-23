@@ -1,4 +1,1190 @@
-<!DOCTYPE html><html class="theme-next pisces use-motion" lang="zh-Hans"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><script src="/lib/pace/pace.min.js?v=1.0.2"></script><link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4"><link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222"><meta name="keywords" content="解析,XPath,lxml,"><meta name="description" content="XPath – 一门在XML文档中查找信息的语言"><meta name="keywords" content="解析,XPath,lxml"><meta property="og:type" content="article"><meta property="og:title" content="XPath lxml的基本用法"><meta property="og:url" content="https://wshaoxin.com/2018/12/14/解析/XPath的基本用法/index.html"><meta property="og:site_name" content="wshaoxin"><meta property="og:description" content="XPath – 一门在XML文档中查找信息的语言"><meta property="og:locale" content="zh-Hans"><meta property="og:updated_time" content="2018-12-18T03:09:32.460Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="XPath lxml的基本用法"><meta name="twitter:description" content="XPath – 一门在XML文档中查找信息的语言"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Pisces",version:"5.1.4",sidebar:{position:"left",display:"post",offset:12,b2t:!1,scrollpercent:!0,onmobile:!1},fancybox:!0,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},duoshuo:{userId:"0",author:"博主"},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><link rel="canonical" href="https://wshaoxin.com/2018/12/14/解析/XPath的基本用法/"><title>XPath lxml的基本用法 | wshaoxin</title></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div> <a href="https://github.com/wshaoxin" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513;color:#fff;position:absolute;top:0;border:0;right:0" aria-hidden="true"><path d="M0 0 115 115 130 115 142 142 250 250 250 0Z"/><path d="M128.3 109C113.8 99.7 119 89.6 119 89.6 122 82.7 120.5 78.6 120.5 78.6 119.2 72 123.4 76.3 123.4 76.3 127.3 80.9 125.5 87.3 125.5 87.3 122.9 97.6 130.6 101.9 134.4 103.2" fill="currentColor" style="transform-origin:130px 106px" class="octo-arm"/><path d="M115 115C114.9 115.1 118.7 116.5 119.8 115.4L133.7 101.6C136.9 99.2 139.9 98.4 142.2 98.6 133.8 88 127.5 74.4 143.8 58 148.5 53.4 154 51.2 159.7 51 160.3 49.4 163.2 43.6 171.4 40.1 171.4 40.1 176.1 42.5 178.8 56.2 183.1 58.6 187.2 61.8 190.9 65.4 194.5 69 197.7 73.2 200.1 77.6 213.8 80.2 216.3 84.9 216.3 84.9 212.7 93.1 206.9 96 205.4 96.6 205.1 102.4 203 107.8 198.3 112.5 181.9 128.9 168.3 122.5 157.7 114.1 157.9 116.9 156.7 120.9 152.7 124.9L141 136.5C139.8 137.7 141.6 141.9 141.8 141.8Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">wshaoxin</span><span class="logo-line-after"><i></i></span></a></div><p class="site-subtitle">个人博客</p></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br> 首页</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br> 分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br> 列表</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br> 标签</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br> 关于</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br> 搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="https://wshaoxin.com/2018/12/14/解析/XPath的基本用法/"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="wshaoxin"><meta itemprop="description" content=""><meta itemprop="image" content="/uploads/avatar.gif"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="wshaoxin"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">XPath lxml的基本用法</h1><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-14T20:30:36+08:00">2018-12-14</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Spider/" itemprop="url" rel="index"><span itemprop="name">Spider</span></a></span> ， <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Spider/解析/" itemprop="url" rel="index"><span itemprop="name">解析</span></a></span></span> <span id="/2018/12/14/解析/XPath的基本用法/" class="leancloud_visitors" data-flag-title="XPath lxml的基本用法"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-eye"></i></span> <span class="post-meta-item-text">阅读次数&#58;</span><span class="leancloud-visitors-count"></span></span><div class="post-wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span> <span class="post-meta-item-text">字数统计&#58;</span> <span title="字数统计">3.4k 字</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-clock-o"></i></span> <span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">15 分钟</span></div></div></header><div class="post-body" itemprop="articleBody"><blockquote class="blockquote-center"> <font color="#808080">XPath – 一门在XML文档中查找信息的语言</font></blockquote><a id="more"></a><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><strong>XPath，全称 XML Path Language，即 XML 路径语言</strong></p><ul><li>可在 XML 中查找信息</li><li>支持 HTML 的查找</li><li>通过元素和属性进行导航</li></ul><p><strong>xml 文档（html 属于 xml）是由一系列节点构成的树，例如：</strong><br></p><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> &gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">p</span>&gt;</span>Hello world<span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/home"</span>&gt;</span>Click here<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure><p></p><p><strong>在 python 中通过 lxml 库利用XPath对HTML进行解析</strong></p><p><strong>XPath 辅助工具：</strong></p><ul><li>Chrome插件 ：Xpath Helper<ul><li>打开/关闭 ：Ctrl + Shift + x</li></ul></li><li>Firefox插件 ：Xpath checker</li><li>Xpath表达式编辑工具 ：XML Quire</li></ul><center><strong>XPath 常用规则</strong></center><table><thead><tr><th>表达式</th><th>描述</th></tr></thead><tbody><tr><td>nodename</td><td>选取此节点的所有子节点</td></tr><tr><td>/</td><td>从当前节点中选区直接子节点</td></tr><tr><td>//</td><td>从当前节点中选取子孙节点</td></tr><tr><td>.</td><td>选取当前节点</td></tr><tr><td>..</td><td>选取当前节点的父节点</td></tr><tr><td>@</td><td>选取属性</td></tr><tr><td>*</td><td>选取所有元素子节点</td></tr><tr><td>@*</td><td>选区所有属性节点</td></tr><tr><td>@ATTR</td><td>选取名为ATTR的属性节点</td></tr><tr><td>text（）</td><td>选区所有文本子节点</td></tr></tbody></table><center><strong>XPath 轴</strong></center><table><thead><tr><th>轴名称</th><th>表达式</th><th>描述</th></tr></thead><tbody><tr><td>ancestor</td><td>xpath(‘./ancestor::*’)</td><td>选取当前节点的所有先辈节点（父、祖父）</td></tr><tr><td>ancestor-or-self</td><td>xpath(‘./ancestor-or-self::*’)</td><td>选取当前节点的所有先辈节点以及节点本身</td></tr><tr><td>attribute</td><td>xpath(‘./attribute::*’)</td><td>选取当前节点的所有属性</td></tr><tr><td>child</td><td>xpath(‘./child::*’)</td><td>返回当前节点的所有子节点</td></tr><tr><td>descendant</td><td>xpath(‘./descendant::*’)</td><td>返回当前节点的所有后代节点（子节点、孙节点）</td></tr><tr><td>following</td><td>xpath(‘./following::*’)</td><td>选取文档中当前节点结束标签后的所有节点</td></tr><tr><td>following-sibing</td><td>xpath(‘./following-sibing::*’)</td><td>选取当前节点之后的兄弟节点</td></tr><tr><td>parent</td><td>xpath(‘./parent::*’)</td><td>选取当前节点的父节点</td></tr><tr><td>preceding</td><td>xpath(‘./preceding::*’)</td><td>选取文档中当前节点开始标签前的所有节点</td></tr><tr><td>preceding-sibling</td><td>xpath(‘./preceding-sibling::*’)</td><td>选取当前节点之前的兄弟节点</td></tr><tr><td>self</td><td>xpath(‘./self::*’)</td><td>选取当前节点</td></tr></tbody></table><center><strong>XPath 功能函数</strong></center><style>table th:nth-of-type(1){width:100px}</style><table><thead><tr><th>函数</th><th>用法用法</th><th>解释</th></tr></thead><tbody><tr><td>starts-with</td><td>xpath(‘//div[starts-with(@id,”ma”)]‘)</td><td>选取id值以ma开头的div节点</td></tr><tr><td>contains</td><td>xpath(‘//div[contains(@id,”ma”)]‘)</td><td>选取id值包含ma的div节点</td></tr><tr><td>and</td><td>xpath(‘//div[contains(@id,”ma”) and contains(@id,”in”)]‘)</td><td>选取id值包含ma和in的div节点</td></tr><tr><td>text()</td><td>xpath(‘//div[contains(text(),”ma”)]‘)</td><td>选取节点文本包含ma的div节点</td></tr></tbody></table><h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><h3 id="tostring（）方法："><a href="#tostring（）方法：" class="headerlink" title="tostring（）方法："></a>tostring（）方法：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">text = <span class="string">'''</span></span><br><span class="line"><span class="string">&lt;div&gt;</span></span><br><span class="line"><span class="string">    &lt;ul&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link1.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link2.html"&gt;second item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-inactive"&gt;&lt;a href="link3.html"&gt;third item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link4.html"&gt;fourth item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link5.html"&gt;fifth item&lt;/a&gt;</span></span><br><span class="line"><span class="string">     &lt;/ul&gt;</span></span><br><span class="line"><span class="string"> &lt;/div&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">html = etree.HTML(text)</span><br><span class="line">result = etree.tostring(html)</span><br><span class="line">print(result.decode(<span class="string">'utf-8'</span>))</span><br></pre></td></tr></table></figure><p>首先导入 lxml 的 etree 模块，然后进行初始化，构造解析对象。<code>tostring()</code>方法输出结果是<code>bytes</code>类型，这里利用 decode( ) 方法将其转成 str 类型。经过处理之后，<code>li</code>节点标签被补全，并且还自动添加了<code>body</code>、<code>html</code>节点。结果如下：</p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;&lt;body&gt;&lt;div&gt;</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">         &lt;li class="item-0"&gt;&lt;a href="link1.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-1"&gt;&lt;a href="link2.html"&gt;second item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-inactive"&gt;&lt;a href="link3.html"&gt;third item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-1"&gt;&lt;a href="link4.html"&gt;fourth item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-0"&gt;&lt;a href="link5.html"&gt;fifth item&lt;/a&gt;</span><br><span class="line">     &lt;/li&gt;&lt;/ul&gt;</span><br><span class="line"> &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;&lt;/html&gt;</span><br></pre></td></tr></table></figure><p>也可直接读取文本文件进行解析：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"></span><br><span class="line"><span class="comment"># test.html的内容就是上面例子中的HTML代码</span></span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = etree.tostring(html)</span><br><span class="line">print(result.decode(<span class="string">'utf-8'</span>))</span><br></pre></td></tr></table></figure><p>输出结果略有不同，多了一个<code>DOCTYPE</code>的声明，不过对解析无任何影响，结果如下：</p><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html PUBLIC <span class="string">"-//W3C//DTD HTML 4.0 Transitional//EN"</span> <span class="string">"http://www.w3.org/TR/REC-html40/loose.dtd"</span>&gt;</span><br><span class="line">&lt;html&gt;&lt;body&gt;&lt;div&gt;</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">         &lt;li class="item-0"&gt;&lt;a href="link1.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-1"&gt;&lt;a href="link2.html"&gt;second item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-inactive"&gt;&lt;a href="link3.html"&gt;third item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-1"&gt;&lt;a href="link4.html"&gt;fourth item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-0"&gt;&lt;a href="link5.html"&gt;fifth item&lt;/a&gt;</span><br><span class="line">     &lt;/li&gt;&lt;/ul&gt;</span><br><span class="line"> &lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</span><br></pre></td></tr></table></figure><h3 id="用-访问所有节点"><a href="#用-访问所有节点" class="headerlink" title="用//访问所有节点"></a>用<code>//</code>访问所有节点</h3><ul><li>使用<code>*</code>代表匹配所有节点，返回形式是一个列表，每个元素是<code>Element</code>类型，其后跟了节点的名称。</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//*'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[&lt;Element html at <span class="number">0x10510d9c8</span>&gt;, &lt;Element body at <span class="number">0x10510da08</span>&gt;, &lt;Element div at <span class="number">0x10510da48</span>&gt;, &lt;Element ul at <span class="number">0x10510da88</span>&gt;, &lt;Element li at <span class="number">0x10510dac8</span>&gt;, &lt;Element a at <span class="number">0x10510db48</span>&gt;, &lt;Element li at <span class="number">0x10510db88</span>&gt;, &lt;Element a at <span class="number">0x10510dbc8</span>&gt;, &lt;Element li at <span class="number">0x10510dc08</span>&gt;, &lt;Element a at <span class="number">0x10510db08</span>&gt;, &lt;Element li at <span class="number">0x10510dc48</span>&gt;, &lt;Element a at <span class="number">0x10510dc88</span>&gt;, &lt;Element li at <span class="number">0x10510dcc8</span>&gt;, &lt;Element a at <span class="number">0x10510dd08</span>&gt;]</span><br></pre></td></tr></table></figure><ul><li>选取所有<code>li</code>节点，可以使用<code>//</code>，然后直接加上节点名称即可</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li'</span>)</span><br><span class="line">print(result)</span><br><span class="line">print(result[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[&lt;Element li at <span class="number">0x105849208</span>&gt;, &lt;Element li at <span class="number">0x105849248</span>&gt;, &lt;Element li at <span class="number">0x105849288</span>&gt;, &lt;Element li at <span class="number">0x1058492c8</span>&gt;, &lt;Element li at <span class="number">0x105849308</span>&gt;]</span><br><span class="line">&lt;Element li at <span class="number">0x105849208</span>&gt;</span><br></pre></td></tr></table></figure><h3 id="通过-或-查找元素的子节点或子孙节点"><a href="#通过-或-查找元素的子节点或子孙节点" class="headerlink" title="通过/或//查找元素的子节点或子孙节点"></a>通过<code>/</code>或<code>//</code>查找元素的子节点或子孙节点</h3><ul><li>选择<code>li</code>节点的所有直接<code>a</code>子节点：</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li/a'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下:</span></span><br><span class="line">[&lt;Element a at <span class="number">0x106ee8688</span>&gt;, &lt;Element a at <span class="number">0x106ee86c8</span>&gt;, &lt;Element a at <span class="number">0x106ee8708</span>&gt;, &lt;Element a at <span class="number">0x106ee8748</span>&gt;, &lt;Element a at <span class="number">0x106ee8788</span>&gt;]</span><br></pre></td></tr></table></figure><ul><li>获取所有子孙节点，就可以使用<code>//</code></li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//ul//a'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出结果与上面相同</span></span><br></pre></td></tr></table></figure><h3 id="用-来查找父节点"><a href="#用-来查找父节点" class="headerlink" title="用..来查找父节点"></a>用<code>..</code>来查找父节点</h3><ul><li>选中<code>href</code>属性为<code>link4.html</code>的<code>a</code>节点，然后再获取其父节点，然后再获取其<code>class</code>属性：</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//a[@href="link4.html"]/../@class'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[<span class="string">'item-1'</span>]</span><br></pre></td></tr></table></figure><ul><li>也可以通过<code>parent::</code>来获取父节点：</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//a[@href="link4.html"]/parent::*/@class'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果与上面相同</span></span><br></pre></td></tr></table></figure><h3 id="用-符号进行属性匹配"><a href="#用-符号进行属性匹配" class="headerlink" title="用@符号进行属性匹配"></a>用<code>@</code>符号进行属性匹配</h3><ul><li>通过加入<code>[@class=&quot;item-0&quot;]</code>，选取 class 为 item-0 的 li 节点</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li[@class="item-0"]'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[&lt;Element li at <span class="number">0x10a399288</span>&gt;, &lt;Element li at <span class="number">0x10a3992c8</span>&gt;]</span><br></pre></td></tr></table></figure><h3 id="用text-方法获取节点中的文本"><a href="#用text-方法获取节点中的文本" class="headerlink" title="用text()方法获取节点中的文本"></a>用<code>text()</code>方法获取节点中的文本</h3><p>获取前面<code>li</code>节点中的文本有两种方法</p><ul><li>1.先选取<code>a</code>节点再获取文本：</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li[@class="item-0"]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[<span class="string">'first item'</span>, <span class="string">'fifth item'</span>]</span><br></pre></td></tr></table></figure><ul><li>2.使用<code>//</code>选取文本：</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li[@class="item-0"]//text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[<span class="string">'first item'</span>, <span class="string">'fifth item'</span>, <span class="string">'\n     '</span>]</span><br></pre></td></tr></table></figure><p>这里的返回结果是3个，其中前两个是<code>li</code>的子节点<code>a</code>节点内部的文本，另外一个是最后一个<code>li</code>节点内部的文本，即换行符。</p><p>如果要想获取子孙节点内部的所有文本，可以直接用<code>//</code>加<code>text()</code>的方式，这样可以保证获取到最全面的文本信息，但是可能会夹杂一些换行符等特殊字符。如果想获取某些特定子孙节点下的所有文本，可以先选取到特定的子孙节点，然后再调用<code>text()</code>方法获取其内部文本，这样可以保证获取的结果是整洁的。</p><h3 id="用-进行属性获取"><a href="#用-进行属性获取" class="headerlink" title="用@进行属性获取"></a>用<code>@</code>进行属性获取</h3><ul><li>获取所有<code>li</code>节点下所有<code>a</code>节点的<code>href</code>属性，返回列表：</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li/a/@href'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下:</span></span><br><span class="line">[<span class="string">'link1.html'</span>, <span class="string">'link2.html'</span>, <span class="string">'link3.html'</span>, <span class="string">'link4.html'</span>, <span class="string">'link5.html'</span>]</span><br></pre></td></tr></table></figure><p>这里我们通过<code>@href</code>即可获取节点的<code>href</code>属性。注意，此处和属性匹配的方法不同，属性匹配是中括号加属性名和值来限定某个属性，如<code>[@href=&quot;link1.html&quot;]</code>，而此处的<code>@href</code>指的是获取节点的某个属性</p><h3 id="用contains-函数进行属性多值匹配"><a href="#用contains-函数进行属性多值匹配" class="headerlink" title="用contains()函数进行属性多值匹配"></a>用<code>contains()</code>函数进行属性多值匹配</h3><ul><li>HTML 文本中<code>li</code>节点的<code>class</code>属性有两个值<code>li</code>和<code>li-first</code>，这时就需要用<code>contains()</code>函数：</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">text = <span class="string">'''</span></span><br><span class="line"><span class="string">&lt;li class="li li-first"&gt;&lt;a href="link.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">html = etree.HTML(text)</span><br><span class="line">result = html.xpath(<span class="string">'//li[contains(@class, "li")]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下:</span></span><br><span class="line">[<span class="string">'first item'</span>]</span><br></pre></td></tr></table></figure><h3 id="使用运算符and进行多属性匹配"><a href="#使用运算符and进行多属性匹配" class="headerlink" title="使用运算符and进行多属性匹配"></a>使用运算符<code>and</code>进行多属性匹配</h3><ul><li>根据多个属性确定一个节点时，需要同时匹配多个属性，此时使用<code>and</code>连接：</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">text = <span class="string">'''</span></span><br><span class="line"><span class="string">&lt;li class="li li-first" name="item"&gt;&lt;a href="link.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">html = etree.HTML(text)</span><br><span class="line">result = html.xpath(<span class="string">'//li[contains(@class, "li") and @name="item"]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[<span class="string">'first item'</span>]</span><br></pre></td></tr></table></figure><h3 id="传入索引按序选择"><a href="#传入索引按序选择" class="headerlink" title="传入索引按序选择"></a>传入索引按序选择</h3><ul><li><p>某些属性同时匹配了多个节点时，利用中括号传入索引来获取我们需要的某个节点：</p><p>​</p></li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">text = <span class="string">'''</span></span><br><span class="line"><span class="string">&lt;div&gt;</span></span><br><span class="line"><span class="string">    &lt;ul&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link1.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link2.html"&gt;second item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-inactive"&gt;&lt;a href="link3.html"&gt;third item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link4.html"&gt;fourth item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link5.html"&gt;fifth item&lt;/a&gt;</span></span><br><span class="line"><span class="string">     &lt;/ul&gt;</span></span><br><span class="line"><span class="string"> &lt;/div&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">html = etree.HTML(text)</span><br><span class="line"><span class="comment"># 这里的序号是以1开头的，不是以0开头</span></span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"><span class="comment"># 中括号中传入last()返回最后一个节点</span></span><br><span class="line">result = html.xpath(<span class="string">'//li[last()]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"><span class="comment"># 选取了位置小于3的li节点，也就是位置序号为1和2的节点</span></span><br><span class="line">result = html.xpath(<span class="string">'//li[position()&lt;3]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"><span class="comment"># 我们选取了倒数第三个li节点，中括号中传入last()-2即可</span></span><br><span class="line">result = html.xpath(<span class="string">'//li[last()-2]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[<span class="string">'first item'</span>]</span><br><span class="line">[<span class="string">'fifth item'</span>]</span><br><span class="line">[<span class="string">'first item'</span>, <span class="string">'second item'</span>]</span><br><span class="line">[<span class="string">'third item'</span>]</span><br></pre></td></tr></table></figure><p>在XPath中，提供了100多个函数，包括存取、数值、字符串、逻辑、节点、序列等处理功能，它们的具体作用可以参考：<a href="http://www.w3school.com.cn/xpath/xpath_functions.asp" target="_blank" rel="noopener">http://www.w3school.com.cn/xpath/xpath_functions.asp</a>。</p><h3 id="节点轴选择"><a href="#节点轴选择" class="headerlink" title="节点轴选择"></a>节点轴选择</h3><ul><li>XPath提供了很多节点轴选择方法，包括获取子元素、兄弟元素、父元素、祖先元素等：</li></ul><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">text = <span class="string">'''</span></span><br><span class="line"><span class="string">&lt;div&gt;</span></span><br><span class="line"><span class="string">    &lt;ul&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link1.html"&gt;&lt;span&gt;first item&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link2.html"&gt;second item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-inactive"&gt;&lt;a href="link3.html"&gt;third item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link4.html"&gt;fourth item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link5.html"&gt;fifth item&lt;/a&gt;</span></span><br><span class="line"><span class="string">     &lt;/ul&gt;</span></span><br><span class="line"><span class="string"> &lt;/div&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">html = etree.HTML(text)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/ancestor::*'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/ancestor::div'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/attribute::*'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/child::a[@href="link1.html"]'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/descendant::span'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/following::*[2]'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath('//li[1]/following-sibling::*')&lt;code class="lang-python"&gt;</span><br><span class="line">&lt;span class="kwd"&gt;print&lt;/span&gt;&lt;span class="pun"&gt;(&lt;/span&gt;&lt;span class="pln"&gt;result&lt;/span&gt;&lt;span class="pun"&gt;)&lt;/span&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[&lt;Element html at <span class="number">0x107941808</span>&gt;, &lt;Element body at <span class="number">0x1079418c8</span>&gt;, &lt;Element div at <span class="number">0x107941908</span>&gt;, &lt;Element ul at <span class="number">0x107941948</span>&gt;]</span><br><span class="line">[&lt;Element div at <span class="number">0x107941908</span>&gt;]</span><br><span class="line">[<span class="string">'item-0'</span>]</span><br><span class="line">[&lt;Element a at <span class="number">0x1079418c8</span>&gt;]</span><br><span class="line">[&lt;Element span at <span class="number">0x107941948</span>&gt;]</span><br><span class="line">[&lt;Element a at <span class="number">0x1079418c8</span>&gt;]</span><br><span class="line">[&lt;Element li at <span class="number">0x107941948</span>&gt;, &lt;Element li at <span class="number">0x107941988</span>&gt;, &lt;Element li at <span class="number">0x1079419c8</span>&gt;, &lt;Element li at <span class="number">0x107941a08</span>&gt;]</span><br></pre></td></tr></table></figure><p>第一次选择时，我们调用了<code>ancestor</code>轴，可以获取所有祖先节点。其后需要跟两个冒号，然后是节点的选择器，这里我们直接使用*，表示匹配所有节点，因此返回结果是第一个<code>li</code>节点的所有祖先节点，包括<code>html</code>、<code>body</code>、<code>div</code>和<code>ul</code>。</p><p>第二次选择时，我们又加了限定条件，这次在冒号后面加了<code>div</code>，这样得到的结果就只有<code>div</code>这个祖先节点了。</p><p>第三次选择时，我们调用了<code>attribute</code>轴，可以获取所有属性值，其后跟的选择器还是*，这代表获取节点的所有属性，返回值就是<code>li</code>节点的所有属性值。</p><p>第四次选择时，我们调用了<code>child</code>轴，可以获取所有直接子节点。这里我们又加了限定条件，选取<code>href</code>属性为<code>link1.html</code>的<code>a</code>节点。</p><p>第五次选择时，我们调用了<code>descendant</code>轴，可以获取所有子孙节点。这里我们又加了限定条件获取<code>span</code>节点，所以返回的结果只包含<code>span</code>节点而不包含<code>a</code>节点。</p><p>第六次选择时，我们调用了<code>following</code>轴，可以获取当前节点之后的所有节点。这里我们虽然使用的是*匹配，但又加了索引选择，所以只获取了第二个后续节点。</p><p>第七次选择时，我们调用了<code>following-sibling</code>轴，可以获取当前节点之后的所有同级节点。这里我们使用*匹配，所以获取了所有后续同级节点。</p><p>以上是XPath轴的简单用法，更多轴的用法可以参考：<a href="http://www.w3school.com.cn/xpath/xpath_axes.asp" target="_blank" rel="noopener">http://www.w3school.com.cn/xpath/xpath_axes.asp</a>。</p><p>如果想查询更多XPath的用法，可以查看：<a href="http://www.w3school.com.cn/xpath/index.asp" target="_blank" rel="noopener">http://www.w3school.com.cn/xpath/index.asp</a>。</p><p>如果想查询更多Python lxml库的用法，可以查看<a href="http://lxml.de/" target="_blank" rel="noopener">http://lxml.de/</a>。</p><hr></div><div><div><div style="text-align:center;color:#ccc;font-size:16px">-------------本文结束<i class="fa fa-heart"></i>感谢阅读-------------</div></div></div><div><div style="padding:10px 0;margin:20px auto;width:90%;text-align:center"><div>坚持原创技术分享，您的支持将鼓励我继续创作！</div> <button id="rewardButton" disable="enable" onclick='var qr=document.getElementById("QR");"none"===qr.style.display?qr.style.display="block":qr.style.display="none"'> <span>打赏</span></button><div id="QR" style="display:none"><div id="wechat" style="display:inline-block"> <img id="wechat_qr" src="/images/wechatpay.jpg" alt="wshaoxin 微信支付"><p>微信支付</p></div><div id="alipay" style="display:inline-block"> <img id="alipay_qr" src="/images/alipay.jpg" alt="wshaoxin 支付宝"><p>支付宝</p></div></div></div></div><footer class="post-footer"><div class="post-tags"><a href="/tags/解析/" rel="tag"><i class="fa fa-tag"></i> 解析</a><a href="/tags/XPath/" rel="tag"><i class="fa fa-tag"></i> XPath</a><a href="/tags/lxml/" rel="tag"><i class="fa fa-tag"></i> lxml</a></div><div><ul class="post-copyright"><li class="post-copyright-author"> <strong>本文作者：</strong>wshaoxin</li><li class="post-copyright-link"> <strong>本文链接：</strong> <a href="/2018/12/14/解析/XPath的基本用法/" title="XPath lxml的基本用法">2018/12/14/解析/XPath的基本用法/</a></li><li class="post-copyright-license"> <strong>版权声明：</strong> 本站文章均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议，请勿用于商业，转载注明出处！</li></ul></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/2018/12/14/解析/pyquery的基本用法/" rel="prev" title="pyquery的使用"><i class="fa fa-chevron-left"></i> pyquery的使用</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/2018/12/13/解析/正则表达式/" rel="next" title="正则表达式">正则表达式<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <a href="/" class="site-author-image" rel="start" style="border:none"><img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="wshaoxin"></a><p class="site-author-name" itemprop="name">wshaoxin</p><p class="site-description motion-element" itemprop="description">悟已往之不谏，知来者之可追；实迷途其未远，觉今是而昨非。</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">11</span> <span class="site-state-item-name">文章</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">7</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">20</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/wshaoxin" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i> GitHub</a></span><span class="links-of-author-item"><a href="mailto:wsahoxin@qq.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i> E-Mail</a></span></div></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用示例"><span class="nav-number">2.</span> <span class="nav-text">使用示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tostring（）方法："><span class="nav-number">2.1.</span> <span class="nav-text">tostring（）方法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用-访问所有节点"><span class="nav-number">2.2.</span> <span class="nav-text">用//访问所有节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过-或-查找元素的子节点或子孙节点"><span class="nav-number">2.3.</span> <span class="nav-text">通过/或//查找元素的子节点或子孙节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用-来查找父节点"><span class="nav-number">2.4.</span> <span class="nav-text">用..来查找父节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用-符号进行属性匹配"><span class="nav-number">2.5.</span> <span class="nav-text">用@符号进行属性匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用text-方法获取节点中的文本"><span class="nav-number">2.6.</span> <span class="nav-text">用text()方法获取节点中的文本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用-进行属性获取"><span class="nav-number">2.7.</span> <span class="nav-text">用@进行属性获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用contains-函数进行属性多值匹配"><span class="nav-number">2.8.</span> <span class="nav-text">用contains()函数进行属性多值匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用运算符and进行多属性匹配"><span class="nav-number">2.9.</span> <span class="nav-text">使用运算符and进行多属性匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传入索引按序选择"><span class="nav-number">2.10.</span> <span class="nav-text">传入索引按序选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#节点轴选择"><span class="nav-number">2.11.</span> <span class="nav-text">节点轴选择</span></a></li></ol></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; <span itemprop="copyrightYear">2018</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">wshaoxin</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-area-chart"></i></span> <span class="post-meta-item-text">全站总字数&#58;</span> <span title="全站总字数">20.9k</span></div><div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div> <span class="post-meta-divider">|</span><div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span id="scrollpercent"><span>0</span>%</span></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/lib/three/three.min.js"></script><script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script><script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><script type="text/javascript">
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="解析,XPath,lxml,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="XPath – 一门在XML文档中查找信息的语言">
+<meta name="keywords" content="解析,XPath,lxml">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XPath lxml的基本用法">
+<meta property="og:url" content="https://wshaoxin.com/2018/12/14/解析/XPath的基本用法/index.html">
+<meta property="og:site_name" content="wshaoxin">
+<meta property="og:description" content="XPath – 一门在XML文档中查找信息的语言">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-18T03:09:32.460Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="XPath lxml的基本用法">
+<meta name="twitter:description" content="XPath – 一门在XML文档中查找信息的语言">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://wshaoxin.com/2018/12/14/解析/XPath的基本用法/">
+
+
+
+
+
+  <title>XPath lxml的基本用法 | wshaoxin</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <a href="https://github.com/wshaoxin" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewbox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"/><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"/><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"/></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wshaoxin</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">个人博客</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            列表
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br>
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://wshaoxin.com/2018/12/14/解析/XPath的基本用法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wshaoxin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wshaoxin">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">XPath lxml的基本用法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-14T20:30:36+08:00">
+                2018-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spider/" itemprop="url" rel="index">
+                    <span itemprop="name">Spider</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spider/解析/" itemprop="url" rel="index">
+                    <span itemprop="name">解析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/12/14/解析/XPath的基本用法/" class="leancloud_visitors" data-flag-title="XPath lxml的基本用法">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  3.4k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  15 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote class="blockquote-center"><font color="#808080">  XPath – 一门在XML文档中查找信息的语言 </font>  
+</blockquote>
+<a id="more"></a>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><strong>XPath，全称 XML Path Language，即 XML 路径语言</strong></p>
+<ul>
+<li>可在 XML 中查找信息 </li>
+<li>支持 HTML 的查找</li>
+<li>通过元素和属性进行导航</li>
+</ul>
+<p><strong>xml 文档（html 属于 xml）是由一系列节点构成的树，例如：</strong><br><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> &gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">p</span>&gt;</span>Hello world<span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"/home"</span>&gt;</span>Click here<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>在 python 中通过 lxml 库利用XPath对HTML进行解析</strong></p>
+<p><strong>XPath 辅助工具：</strong></p>
+<ul>
+<li>Chrome插件 ：Xpath Helper<ul>
+<li>打开/关闭 ：Ctrl + Shift + x</li>
+</ul>
+</li>
+<li>Firefox插件 ：Xpath checker</li>
+<li>Xpath表达式编辑工具 ：XML Quire</li>
+</ul>
+<center><strong>XPath 常用规则</strong></center>
+
+<table>
+<thead>
+<tr>
+<th>表达式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>nodename</td>
+<td>选取此节点的所有子节点</td>
+</tr>
+<tr>
+<td>/</td>
+<td>从当前节点中选区直接子节点</td>
+</tr>
+<tr>
+<td>//</td>
+<td>从当前节点中选取子孙节点</td>
+</tr>
+<tr>
+<td>.</td>
+<td>选取当前节点</td>
+</tr>
+<tr>
+<td>..</td>
+<td>选取当前节点的父节点</td>
+</tr>
+<tr>
+<td>@</td>
+<td>选取属性</td>
+</tr>
+<tr>
+<td>*</td>
+<td>选取所有元素子节点</td>
+</tr>
+<tr>
+<td>@*</td>
+<td>选区所有属性节点</td>
+</tr>
+<tr>
+<td>@ATTR</td>
+<td>选取名为ATTR的属性节点</td>
+</tr>
+<tr>
+<td>text（）</td>
+<td>选区所有文本子节点</td>
+</tr>
+</tbody>
+</table>
+<center><strong>XPath 轴</strong></center>
+
+<table>
+<thead>
+<tr>
+<th>轴名称</th>
+<th>表达式</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ancestor</td>
+<td>xpath(‘./ancestor::*’)</td>
+<td>选取当前节点的所有先辈节点（父、祖父）</td>
+</tr>
+<tr>
+<td>ancestor-or-self</td>
+<td>xpath(‘./ancestor-or-self::*’)</td>
+<td>选取当前节点的所有先辈节点以及节点本身</td>
+</tr>
+<tr>
+<td>attribute</td>
+<td>xpath(‘./attribute::*’)</td>
+<td>选取当前节点的所有属性</td>
+</tr>
+<tr>
+<td>child</td>
+<td>xpath(‘./child::*’)</td>
+<td>返回当前节点的所有子节点</td>
+</tr>
+<tr>
+<td>descendant</td>
+<td>xpath(‘./descendant::*’)</td>
+<td>返回当前节点的所有后代节点（子节点、孙节点）</td>
+</tr>
+<tr>
+<td>following</td>
+<td>xpath(‘./following::*’)</td>
+<td>选取文档中当前节点结束标签后的所有节点</td>
+</tr>
+<tr>
+<td>following-sibing</td>
+<td>xpath(‘./following-sibing::*’)</td>
+<td>选取当前节点之后的兄弟节点</td>
+</tr>
+<tr>
+<td>parent</td>
+<td>xpath(‘./parent::*’)</td>
+<td>选取当前节点的父节点</td>
+</tr>
+<tr>
+<td>preceding</td>
+<td>xpath(‘./preceding::*’)</td>
+<td>选取文档中当前节点开始标签前的所有节点</td>
+</tr>
+<tr>
+<td>preceding-sibling</td>
+<td>xpath(‘./preceding-sibling::*’)</td>
+<td>选取当前节点之前的兄弟节点</td>
+</tr>
+<tr>
+<td>self</td>
+<td>xpath(‘./self::*’)</td>
+<td>选取当前节点</td>
+</tr>
+</tbody>
+</table>
+<center><strong>XPath 功能函数</strong></center>
+
+<style>
+table th:nth-of-type(1) {
+    width: 100px;
+}
+</style>
+
+
+
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>用法用法</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>starts-with</td>
+<td>xpath(‘//div[starts-with(@id,”ma”)]‘)</td>
+<td>选取id值以ma开头的div节点</td>
+</tr>
+<tr>
+<td>contains</td>
+<td>xpath(‘//div[contains(@id,”ma”)]‘)</td>
+<td>选取id值包含ma的div节点</td>
+</tr>
+<tr>
+<td>and</td>
+<td>xpath(‘//div[contains(@id,”ma”) and contains(@id,”in”)]‘)</td>
+<td>选取id值包含ma和in的div节点</td>
+</tr>
+<tr>
+<td>text()</td>
+<td>xpath(‘//div[contains(text(),”ma”)]‘)</td>
+<td>选取节点文本包含ma的div节点</td>
+</tr>
+</tbody>
+</table>
+<h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><h3 id="tostring（）方法："><a href="#tostring（）方法：" class="headerlink" title="tostring（）方法："></a>tostring（）方法：</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">text = <span class="string">'''</span></span><br><span class="line"><span class="string">&lt;div&gt;</span></span><br><span class="line"><span class="string">    &lt;ul&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link1.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link2.html"&gt;second item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-inactive"&gt;&lt;a href="link3.html"&gt;third item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link4.html"&gt;fourth item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link5.html"&gt;fifth item&lt;/a&gt;</span></span><br><span class="line"><span class="string">     &lt;/ul&gt;</span></span><br><span class="line"><span class="string"> &lt;/div&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">html = etree.HTML(text)</span><br><span class="line">result = etree.tostring(html)</span><br><span class="line">print(result.decode(<span class="string">'utf-8'</span>))</span><br></pre></td></tr></table></figure>
+<p>首先导入 lxml 的 etree 模块，然后进行初始化，构造解析对象。<code>tostring()</code>方法输出结果是<code>bytes</code>类型，这里利用 decode( ) 方法将其转成 str 类型。经过处理之后，<code>li</code>节点标签被补全，并且还自动添加了<code>body</code>、<code>html</code>节点。结果如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;html&gt;&lt;body&gt;&lt;div&gt;</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">         &lt;li class="item-0"&gt;&lt;a href="link1.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-1"&gt;&lt;a href="link2.html"&gt;second item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-inactive"&gt;&lt;a href="link3.html"&gt;third item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-1"&gt;&lt;a href="link4.html"&gt;fourth item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-0"&gt;&lt;a href="link5.html"&gt;fifth item&lt;/a&gt;</span><br><span class="line">     &lt;/li&gt;&lt;/ul&gt;</span><br><span class="line"> &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>也可直接读取文本文件进行解析：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"></span><br><span class="line"><span class="comment"># test.html的内容就是上面例子中的HTML代码</span></span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = etree.tostring(html)</span><br><span class="line">print(result.decode(<span class="string">'utf-8'</span>))</span><br></pre></td></tr></table></figure>
+<p>输出结果略有不同，多了一个<code>DOCTYPE</code>的声明，不过对解析无任何影响，结果如下：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html PUBLIC <span class="string">"-//W3C//DTD HTML 4.0 Transitional//EN"</span> <span class="string">"http://www.w3.org/TR/REC-html40/loose.dtd"</span>&gt;</span><br><span class="line">&lt;html&gt;&lt;body&gt;&lt;div&gt;</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">         &lt;li class="item-0"&gt;&lt;a href="link1.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-1"&gt;&lt;a href="link2.html"&gt;second item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-inactive"&gt;&lt;a href="link3.html"&gt;third item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-1"&gt;&lt;a href="link4.html"&gt;fourth item&lt;/a&gt;&lt;/li&gt;</span><br><span class="line">         &lt;li class="item-0"&gt;&lt;a href="link5.html"&gt;fifth item&lt;/a&gt;</span><br><span class="line">     &lt;/li&gt;&lt;/ul&gt;</span><br><span class="line"> &lt;/div&gt;&lt;/body&gt;&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="用-访问所有节点"><a href="#用-访问所有节点" class="headerlink" title="用//访问所有节点"></a>用<code>//</code>访问所有节点</h3><ul>
+<li>使用<code>*</code>代表匹配所有节点，返回形式是一个列表，每个元素是<code>Element</code>类型，其后跟了节点的名称。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//*'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[&lt;Element html at <span class="number">0x10510d9c8</span>&gt;, &lt;Element body at <span class="number">0x10510da08</span>&gt;, &lt;Element div at <span class="number">0x10510da48</span>&gt;, &lt;Element ul at <span class="number">0x10510da88</span>&gt;, &lt;Element li at <span class="number">0x10510dac8</span>&gt;, &lt;Element a at <span class="number">0x10510db48</span>&gt;, &lt;Element li at <span class="number">0x10510db88</span>&gt;, &lt;Element a at <span class="number">0x10510dbc8</span>&gt;, &lt;Element li at <span class="number">0x10510dc08</span>&gt;, &lt;Element a at <span class="number">0x10510db08</span>&gt;, &lt;Element li at <span class="number">0x10510dc48</span>&gt;, &lt;Element a at <span class="number">0x10510dc88</span>&gt;, &lt;Element li at <span class="number">0x10510dcc8</span>&gt;, &lt;Element a at <span class="number">0x10510dd08</span>&gt;]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>选取所有<code>li</code>节点，可以使用<code>//</code>，然后直接加上节点名称即可</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li'</span>)</span><br><span class="line">print(result)</span><br><span class="line">print(result[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[&lt;Element li at <span class="number">0x105849208</span>&gt;, &lt;Element li at <span class="number">0x105849248</span>&gt;, &lt;Element li at <span class="number">0x105849288</span>&gt;, &lt;Element li at <span class="number">0x1058492c8</span>&gt;, &lt;Element li at <span class="number">0x105849308</span>&gt;]</span><br><span class="line">&lt;Element li at <span class="number">0x105849208</span>&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="通过-或-查找元素的子节点或子孙节点"><a href="#通过-或-查找元素的子节点或子孙节点" class="headerlink" title="通过/或//查找元素的子节点或子孙节点"></a>通过<code>/</code>或<code>//</code>查找元素的子节点或子孙节点</h3><ul>
+<li>选择<code>li</code>节点的所有直接<code>a</code>子节点：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li/a'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下:</span></span><br><span class="line">[&lt;Element a at <span class="number">0x106ee8688</span>&gt;, &lt;Element a at <span class="number">0x106ee86c8</span>&gt;, &lt;Element a at <span class="number">0x106ee8708</span>&gt;, &lt;Element a at <span class="number">0x106ee8748</span>&gt;, &lt;Element a at <span class="number">0x106ee8788</span>&gt;]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>获取所有子孙节点，就可以使用<code>//</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//ul//a'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出结果与上面相同</span></span><br></pre></td></tr></table></figure>
+<h3 id="用-来查找父节点"><a href="#用-来查找父节点" class="headerlink" title="用..来查找父节点"></a>用<code>..</code>来查找父节点</h3><ul>
+<li>选中<code>href</code>属性为<code>link4.html</code>的<code>a</code>节点，然后再获取其父节点，然后再获取其<code>class</code>属性：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//a[@href="link4.html"]/../@class'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[<span class="string">'item-1'</span>]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>也可以通过<code>parent::</code>来获取父节点：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//a[@href="link4.html"]/parent::*/@class'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果与上面相同</span></span><br></pre></td></tr></table></figure>
+<h3 id="用-符号进行属性匹配"><a href="#用-符号进行属性匹配" class="headerlink" title="用@符号进行属性匹配"></a>用<code>@</code>符号进行属性匹配</h3><ul>
+<li>通过加入<code>[@class=&quot;item-0&quot;]</code>，选取 class 为 item-0 的 li 节点</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li[@class="item-0"]'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[&lt;Element li at <span class="number">0x10a399288</span>&gt;, &lt;Element li at <span class="number">0x10a3992c8</span>&gt;]</span><br></pre></td></tr></table></figure>
+<h3 id="用text-方法获取节点中的文本"><a href="#用text-方法获取节点中的文本" class="headerlink" title="用text()方法获取节点中的文本"></a>用<code>text()</code>方法获取节点中的文本</h3><p>获取前面<code>li</code>节点中的文本有两种方法</p>
+<ul>
+<li>1.先选取<code>a</code>节点再获取文本：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li[@class="item-0"]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[<span class="string">'first item'</span>, <span class="string">'fifth item'</span>]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>2.使用<code>//</code>选取文本：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li[@class="item-0"]//text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[<span class="string">'first item'</span>, <span class="string">'fifth item'</span>, <span class="string">'\n     '</span>]</span><br></pre></td></tr></table></figure>
+<p>这里的返回结果是3个，其中前两个是<code>li</code>的子节点<code>a</code>节点内部的文本，另外一个是最后一个<code>li</code>节点内部的文本，即换行符。</p>
+<p>如果要想获取子孙节点内部的所有文本，可以直接用<code>//</code>加<code>text()</code>的方式，这样可以保证获取到最全面的文本信息，但是可能会夹杂一些换行符等特殊字符。如果想获取某些特定子孙节点下的所有文本，可以先选取到特定的子孙节点，然后再调用<code>text()</code>方法获取其内部文本，这样可以保证获取的结果是整洁的。</p>
+<h3 id="用-进行属性获取"><a href="#用-进行属性获取" class="headerlink" title="用@进行属性获取"></a>用<code>@</code>进行属性获取</h3><ul>
+<li>获取所有<code>li</code>节点下所有<code>a</code>节点的<code>href</code>属性，返回列表：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">html = etree.parse(<span class="string">'./test.html'</span>, etree.HTMLParser())</span><br><span class="line">result = html.xpath(<span class="string">'//li/a/@href'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下:</span></span><br><span class="line">[<span class="string">'link1.html'</span>, <span class="string">'link2.html'</span>, <span class="string">'link3.html'</span>, <span class="string">'link4.html'</span>, <span class="string">'link5.html'</span>]</span><br></pre></td></tr></table></figure>
+<p>这里我们通过<code>@href</code>即可获取节点的<code>href</code>属性。注意，此处和属性匹配的方法不同，属性匹配是中括号加属性名和值来限定某个属性，如<code>[@href=&quot;link1.html&quot;]</code>，而此处的<code>@href</code>指的是获取节点的某个属性</p>
+<h3 id="用contains-函数进行属性多值匹配"><a href="#用contains-函数进行属性多值匹配" class="headerlink" title="用contains()函数进行属性多值匹配"></a>用<code>contains()</code>函数进行属性多值匹配</h3><ul>
+<li>HTML 文本中<code>li</code>节点的<code>class</code>属性有两个值<code>li</code>和<code>li-first</code>，这时就需要用<code>contains()</code>函数：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">text = <span class="string">'''</span></span><br><span class="line"><span class="string">&lt;li class="li li-first"&gt;&lt;a href="link.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">html = etree.HTML(text)</span><br><span class="line">result = html.xpath(<span class="string">'//li[contains(@class, "li")]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下:</span></span><br><span class="line">[<span class="string">'first item'</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="使用运算符and进行多属性匹配"><a href="#使用运算符and进行多属性匹配" class="headerlink" title="使用运算符and进行多属性匹配"></a>使用运算符<code>and</code>进行多属性匹配</h3><ul>
+<li>根据多个属性确定一个节点时，需要同时匹配多个属性，此时使用<code>and</code>连接：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line">text = <span class="string">'''</span></span><br><span class="line"><span class="string">&lt;li class="li li-first" name="item"&gt;&lt;a href="link.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">html = etree.HTML(text)</span><br><span class="line">result = html.xpath(<span class="string">'//li[contains(@class, "li") and @name="item"]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[<span class="string">'first item'</span>]</span><br></pre></td></tr></table></figure>
+<h3 id="传入索引按序选择"><a href="#传入索引按序选择" class="headerlink" title="传入索引按序选择"></a>传入索引按序选择</h3><ul>
+<li><p>某些属性同时匹配了多个节点时，利用中括号传入索引来获取我们需要的某个节点：</p>
+<p>​</p>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">text = <span class="string">'''</span></span><br><span class="line"><span class="string">&lt;div&gt;</span></span><br><span class="line"><span class="string">    &lt;ul&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link1.html"&gt;first item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link2.html"&gt;second item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-inactive"&gt;&lt;a href="link3.html"&gt;third item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link4.html"&gt;fourth item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link5.html"&gt;fifth item&lt;/a&gt;</span></span><br><span class="line"><span class="string">     &lt;/ul&gt;</span></span><br><span class="line"><span class="string"> &lt;/div&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">html = etree.HTML(text)</span><br><span class="line"><span class="comment"># 这里的序号是以1开头的，不是以0开头</span></span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"><span class="comment"># 中括号中传入last()返回最后一个节点</span></span><br><span class="line">result = html.xpath(<span class="string">'//li[last()]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"><span class="comment"># 选取了位置小于3的li节点，也就是位置序号为1和2的节点</span></span><br><span class="line">result = html.xpath(<span class="string">'//li[position()&lt;3]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"><span class="comment"># 我们选取了倒数第三个li节点，中括号中传入last()-2即可</span></span><br><span class="line">result = html.xpath(<span class="string">'//li[last()-2]/a/text()'</span>)</span><br><span class="line">print(result)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[<span class="string">'first item'</span>]</span><br><span class="line">[<span class="string">'fifth item'</span>]</span><br><span class="line">[<span class="string">'first item'</span>, <span class="string">'second item'</span>]</span><br><span class="line">[<span class="string">'third item'</span>]</span><br></pre></td></tr></table></figure>
+<p>在XPath中，提供了100多个函数，包括存取、数值、字符串、逻辑、节点、序列等处理功能，它们的具体作用可以参考：<a href="http://www.w3school.com.cn/xpath/xpath_functions.asp" target="_blank" rel="noopener">http://www.w3school.com.cn/xpath/xpath_functions.asp</a>。</p>
+<h3 id="节点轴选择"><a href="#节点轴选择" class="headerlink" title="节点轴选择"></a>节点轴选择</h3><ul>
+<li>XPath提供了很多节点轴选择方法，包括获取子元素、兄弟元素、父元素、祖先元素等：</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> lxml <span class="keyword">import</span> etree</span><br><span class="line"> </span><br><span class="line">text = <span class="string">'''</span></span><br><span class="line"><span class="string">&lt;div&gt;</span></span><br><span class="line"><span class="string">    &lt;ul&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link1.html"&gt;&lt;span&gt;first item&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link2.html"&gt;second item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-inactive"&gt;&lt;a href="link3.html"&gt;third item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-1"&gt;&lt;a href="link4.html"&gt;fourth item&lt;/a&gt;&lt;/li&gt;</span></span><br><span class="line"><span class="string">         &lt;li class="item-0"&gt;&lt;a href="link5.html"&gt;fifth item&lt;/a&gt;</span></span><br><span class="line"><span class="string">     &lt;/ul&gt;</span></span><br><span class="line"><span class="string"> &lt;/div&gt;</span></span><br><span class="line"><span class="string">'''</span></span><br><span class="line">html = etree.HTML(text)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/ancestor::*'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/ancestor::div'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/attribute::*'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/child::a[@href="link1.html"]'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/descendant::span'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath(<span class="string">'//li[1]/following::*[2]'</span>)</span><br><span class="line">print(result)</span><br><span class="line">result = html.xpath('//li[1]/following-sibling::*')&lt;code class="lang-python"&gt;</span><br><span class="line">&lt;span class="kwd"&gt;print&lt;/span&gt;&lt;span class="pun"&gt;(&lt;/span&gt;&lt;span class="pln"&gt;result&lt;/span&gt;&lt;span class="pun"&gt;)&lt;/span&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 结果如下：</span></span><br><span class="line">[&lt;Element html at <span class="number">0x107941808</span>&gt;, &lt;Element body at <span class="number">0x1079418c8</span>&gt;, &lt;Element div at <span class="number">0x107941908</span>&gt;, &lt;Element ul at <span class="number">0x107941948</span>&gt;]</span><br><span class="line">[&lt;Element div at <span class="number">0x107941908</span>&gt;]</span><br><span class="line">[<span class="string">'item-0'</span>]</span><br><span class="line">[&lt;Element a at <span class="number">0x1079418c8</span>&gt;]</span><br><span class="line">[&lt;Element span at <span class="number">0x107941948</span>&gt;]</span><br><span class="line">[&lt;Element a at <span class="number">0x1079418c8</span>&gt;]</span><br><span class="line">[&lt;Element li at <span class="number">0x107941948</span>&gt;, &lt;Element li at <span class="number">0x107941988</span>&gt;, &lt;Element li at <span class="number">0x1079419c8</span>&gt;, &lt;Element li at <span class="number">0x107941a08</span>&gt;]</span><br></pre></td></tr></table></figure>
+<p>第一次选择时，我们调用了<code>ancestor</code>轴，可以获取所有祖先节点。其后需要跟两个冒号，然后是节点的选择器，这里我们直接使用*，表示匹配所有节点，因此返回结果是第一个<code>li</code>节点的所有祖先节点，包括<code>html</code>、<code>body</code>、<code>div</code>和<code>ul</code>。</p>
+<p>第二次选择时，我们又加了限定条件，这次在冒号后面加了<code>div</code>，这样得到的结果就只有<code>div</code>这个祖先节点了。</p>
+<p>第三次选择时，我们调用了<code>attribute</code>轴，可以获取所有属性值，其后跟的选择器还是*，这代表获取节点的所有属性，返回值就是<code>li</code>节点的所有属性值。</p>
+<p>第四次选择时，我们调用了<code>child</code>轴，可以获取所有直接子节点。这里我们又加了限定条件，选取<code>href</code>属性为<code>link1.html</code>的<code>a</code>节点。</p>
+<p>第五次选择时，我们调用了<code>descendant</code>轴，可以获取所有子孙节点。这里我们又加了限定条件获取<code>span</code>节点，所以返回的结果只包含<code>span</code>节点而不包含<code>a</code>节点。</p>
+<p>第六次选择时，我们调用了<code>following</code>轴，可以获取当前节点之后的所有节点。这里我们虽然使用的是*匹配，但又加了索引选择，所以只获取了第二个后续节点。</p>
+<p>第七次选择时，我们调用了<code>following-sibling</code>轴，可以获取当前节点之后的所有同级节点。这里我们使用*匹配，所以获取了所有后续同级节点。</p>
+<p>以上是XPath轴的简单用法，更多轴的用法可以参考：<a href="http://www.w3school.com.cn/xpath/xpath_axes.asp" target="_blank" rel="noopener">http://www.w3school.com.cn/xpath/xpath_axes.asp</a>。</p>
+<p>如果想查询更多XPath的用法，可以查看：<a href="http://www.w3school.com.cn/xpath/index.asp" target="_blank" rel="noopener">http://www.w3school.com.cn/xpath/index.asp</a>。</p>
+<p>如果想查询更多Python lxml库的用法，可以查看<a href="http://lxml.de/" target="_blank" rel="noopener">http://lxml.de/</a>。</p>
+<hr>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:16px;">-------------本文结束<i class="fa fa-heart"></i>感谢阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="/images/wechatpay.jpg" alt="wshaoxin 微信支付">
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="wshaoxin 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/解析/" rel="tag"><i class="fa fa-tag"></i> 解析</a>
+          
+            <a href="/tags/XPath/" rel="tag"><i class="fa fa-tag"></i> XPath</a>
+          
+            <a href="/tags/lxml/" rel="tag"><i class="fa fa-tag"></i> lxml</a>
+          
+        </div>
+      
+
+    <div>    
+      
+      
+    <ul class="post-copyright">
+      <li class="post-copyright-author">
+        <strong>本文作者：</strong>wshaoxin
+      </li>
+      <li class="post-copyright-link">
+        <strong>本文链接：</strong>
+        <a href="/2018/12/14/解析/XPath的基本用法/" title="XPath lxml的基本用法">2018/12/14/解析/XPath的基本用法/</a>
+      </li>
+      <li class="post-copyright-license">
+        <strong>版权声明： </strong>
+        本站文章均采用 <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/cn/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0 CN</a> 许可协议，请勿用于商业，转载注明出处！
+      </li>
+    </ul>
+    
+    </div>
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/14/解析/pyquery的基本用法/" rel="prev" title="pyquery的使用">
+                <i class="fa fa-chevron-left"></i> pyquery的使用
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/13/解析/正则表达式/" rel="next" title="正则表达式">
+                正则表达式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+            <a href="/" class="site-author-image" rel="start" style="border:none">
+              <img class="site-author-image" itemprop="image" src="/uploads/avatar.gif" alt="wshaoxin">
+            </a>
+            
+              <p class="site-author-name" itemprop="name">wshaoxin</p>
+              <p class="site-description motion-element" itemprop="description">悟已往之不谏，知来者之可追；实迷途其未远，觉今是而昨非。</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">文章</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/wshaoxin" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+                  <span class="links-of-author-item">
+                    <a href="mailto:wsahoxin@qq.com" target="_blank" title="E-Mail">
+                      
+                        <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#简介"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用示例"><span class="nav-number">2.</span> <span class="nav-text">使用示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tostring（）方法："><span class="nav-number">2.1.</span> <span class="nav-text">tostring（）方法：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用-访问所有节点"><span class="nav-number">2.2.</span> <span class="nav-text">用//访问所有节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过-或-查找元素的子节点或子孙节点"><span class="nav-number">2.3.</span> <span class="nav-text">通过/或//查找元素的子节点或子孙节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用-来查找父节点"><span class="nav-number">2.4.</span> <span class="nav-text">用..来查找父节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用-符号进行属性匹配"><span class="nav-number">2.5.</span> <span class="nav-text">用@符号进行属性匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用text-方法获取节点中的文本"><span class="nav-number">2.6.</span> <span class="nav-text">用text()方法获取节点中的文本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用-进行属性获取"><span class="nav-number">2.7.</span> <span class="nav-text">用@进行属性获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用contains-函数进行属性多值匹配"><span class="nav-number">2.8.</span> <span class="nav-text">用contains()函数进行属性多值匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用运算符and进行多属性匹配"><span class="nav-number">2.9.</span> <span class="nav-text">使用运算符and进行多属性匹配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#传入索引按序选择"><span class="nav-number">2.10.</span> <span class="nav-text">传入索引按序选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#节点轴选择"><span class="nav-number">2.11.</span> <span class="nav-text">节点轴选择</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wshaoxin</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">全站总字数&#58;</span>
+    
+    <span title="全站总字数">24k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a></div>
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/three.min.js"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/three/canvas_lines.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
     // Popup Window;
     var isfetched = false;
     var isXml = true;
@@ -313,4 +1499,138 @@
         onPopupClose();
       }
     });
-  </script><script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script><script>AV.initialize("XR37vOU99cJ8X0ijYg1j0Mnu-gzGzoHsz","E3QzwSvAxmMK85Kt38lonOaD")</script><script>function showTime(e){var t=new AV.Query(e),c=[],u=$(".leancloud_visitors");u.each(function(){c.push($(this).attr("id").trim())}),t.containedIn("url",c),t.find().done(function(e){var t=".leancloud-visitors-count";if(0!==e.length){for(var n=0;n<e.length;n++){var o=e[n],i=o.get("url"),s=o.get("time"),r=document.getElementById(i);$(r).find(t).text(s)}for(n=0;n<c.length;n++){i=c[n],r=document.getElementById(i);var l=$(r).find(t);""==l.text()&&l.text(0)}}else u.find(t).text(0)}).fail(function(e,t){console.log("Error: "+t.code+" "+t.message)})}function addCount(i){var e=$(".leancloud_visitors"),s=e.attr("id").trim(),r=e.attr("data-flag-title").trim(),t=new AV.Query(i);t.equalTo("url",s),t.find({success:function(e){if(0<e.length){var t=e[0];t.fetchWhenSave(!0),t.increment("time"),t.save(null,{success:function(e){$(document.getElementById(s)).find(".leancloud-visitors-count").text(e.get("time"))},error:function(e,t){console.log("Failed to save Visitor num, with error message: "+t.message)}})}else{var n=new i,o=new AV.ACL;o.setPublicReadAccess(!0),o.setPublicWriteAccess(!0),n.setACL(o),n.set("title",r),n.set("url",s),n.set("time",1),n.save(null,{success:function(e){$(document.getElementById(s)).find(".leancloud-visitors-count").text(e.get("time"))},error:function(e,t){console.log("Failed to create")}})}},error:function(e){console.log("Error:"+e.code+" "+e.message)}})}$(function(){var e=AV.Object.extend("Counter");1==$(".leancloud_visitors").length?addCount(e):1<$(".post-title-link").length&&showTime(e)})</script><script type="text/javascript" src="/js/src/love.js"></script></body></html>
+  </script>
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("XR37vOU99cJ8X0ijYg1j0Mnu-gzGzoHsz", "E3QzwSvAxmMK85Kt38lonOaD");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+
+</body>
+</html>
+
