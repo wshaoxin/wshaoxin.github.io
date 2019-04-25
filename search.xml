@@ -119,8 +119,8 @@
       </categories>
       <tags>
         <tag>解析</tag>
-        <tag>BeautifulSoup</tag>
         <tag>css选择器</tag>
+        <tag>BeautifulSoup</tag>
       </tags>
   </entry>
   <entry>
@@ -132,8 +132,8 @@
         <category>解析</category>
       </categories>
       <tags>
-        <tag>css选择器</tag>
         <tag>pyquery</tag>
+        <tag>css选择器</tag>
       </tags>
   </entry>
   <entry>
